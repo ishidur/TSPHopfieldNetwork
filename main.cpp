@@ -47,15 +47,16 @@ array calcDeltaU(const array& state)
 void run()
 {
 	int n = cities.size() * cities.size();
-	array result = 0.5 + NOISE * (randu(n) - constant(0.5, n, f64));
+	array innerVal = NOISE * (randu(n, f64) - constant(0.5, n, f64));
+	array result = activationFunc(innerVal);
 	float progress = 0.0;
 	const double step = 1.0 / (RECALL_TIME - 1.0);
 	for (int i = 0; i < RECALL_TIME; ++i)
 	{
 		//update innerVal
-		result += calcDeltaU(result);
+		innerVal += calcDeltaU(result);
 		//update state from innerVal
-		result = reluFunc1(result);
+		result = activationFunc(innerVal);
 		int barWidth = 70;
 
 		std::cout << "[";

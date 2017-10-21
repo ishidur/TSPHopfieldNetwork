@@ -2,11 +2,10 @@
 
 #define RECALL_TIME 10000
 #define DELTA_T 0.005
-#define	NOISE 0.000000001
+#define	NOISE 1.0
 #define U0 0.02
 #define A 4.0
 #define B 4.0
-#define C 4.0
 #define D 2.0
 
 const std::vector<std::vector<double>> cities = {
