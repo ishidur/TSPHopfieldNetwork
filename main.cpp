@@ -32,7 +32,7 @@ array calcDeltaU(const array& state, const array& innerVal)
 void run()
 {
 	int n = cities.size() * cities.size();
-	array innerVal = NOISE * (randu(n) - constant(0.5, n, f64));
+	array innerVal = NOISE * (randu(n, f64) - constant(0.5, n, f64));
 	array result = activationFunc(innerVal);
 	float progress = 0.0;
 	const double step = 1.0 / (RECALL_TIME - 1.0);
