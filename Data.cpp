@@ -1,7 +1,6 @@
 #include "Data.h"
 #include <af/random.h>
 #include <af/data.h>
-#include <iostream>
 
 
 double kronecker_delta(int i, int j)
@@ -34,12 +33,12 @@ array calc_weight_mtrx()
 	array tmp = randu(n, n, f64);
 	for (int s0 = 0; s0 < n; ++s0)
 	{
-		int x = s0 / cities.size();
-		int i = s0 % cities.size();
+		int x = s0 % cities.size();
+		int i = s0 / cities.size();
 		for (int s1 = 0; s1 < n; ++s1)
 		{
-			int y = s1 / cities.size();
-			int j = s1 % cities.size();
+			int y = s1 % cities.size();
+			int j = s1 / cities.size();
 			double dxy = distance(x, y);
 
 			tmp(s0, s1) = -A * kronecker_delta(x, y) - B * kronecker_delta(i, j) - D * dxy * (kronecker_delta(j, i - 1) +
