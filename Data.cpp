@@ -10,7 +10,7 @@ double kronecker_delta(int i, int j)
 	{
 		j = cities.size() - 1;
 	}
-	else if(j>cities.size() - 1)
+	else if (j > cities.size() - 1)
 	{
 		j = 0;
 	}
@@ -42,8 +42,8 @@ array calc_weight_mtrx()
 			int j = s1 % cities.size();
 			double dxy = distance(x, y);
 
-			tmp(s0, s1) = -A * kronecker_delta(x, y) * (1.0 - kronecker_delta(i, j)) - B * kronecker_delta(i, j) * (1.0 -
-				kronecker_delta(x, y)) - C - D * dxy * (kronecker_delta(j, i - 1) + kronecker_delta(j, i + 1));
+			tmp(s0, s1) = -A * kronecker_delta(x, y) - B * kronecker_delta(i, j) - D * dxy * (kronecker_delta(j, i - 1) +
+				kronecker_delta(j, i + 1));
 		}
 	}
 	return tmp;
@@ -52,7 +52,7 @@ array calc_weight_mtrx()
 array calc_biases()
 {
 	int n = cities.size() * cities.size();
-	array tmp = constant(C * 15.0, n, f64);
+	array tmp = constant((A + B), n, f64);
 	return tmp;
 }
 

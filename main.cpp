@@ -22,6 +22,14 @@ array activationFunc(const array& inputs)
 	return sigmoid(inputs / U0);
 }
 
+array reluFunc(const array& inputs)
+{
+	array result = inputs + 0.5;
+	result(result > 1.0) = 1.0;
+	result(result < 0.0) = 0.0;
+	return result;
+}
+
 array calcDeltaU(const array& state, const array& innerVal)
 {
 	const double tau = 1.0;
@@ -34,13 +42,32 @@ void run()
 	int n = cities.size() * cities.size();
 	array innerVal = NOISE * (randu(n) - constant(0.5, n, f64));
 	array result = activationFunc(innerVal);
+	float progress = 0.0;
+	const double step = 1.0 / (RECALL_TIME - 1.0);
 	for (int i = 0; i < RECALL_TIME; ++i)
 	{
 		//update innerVal
 		innerVal += calcDeltaU(result, innerVal);
 		//update state from innerVal
 		result = activationFunc(innerVal);
+
+		int barWidth = 70;
+
+		std::cout << "[";
+		int pos = barWidth * progress;
+		for (int i = 0; i < barWidth; ++i)
+		{
+			if (i < pos) std::cout << "=";
+			else if (i == pos) std::cout << ">";
+			else std::cout << " ";
+		}
+		std::cout << "] " << int(progress * 100.0) << " %\r";
+		std::cout.flush();
+
+		progress += step;
 	}
+	std::cout << std::endl;
+
 	dim4 new_dims(cities.size(), cities.size());
 	af_print(moddims(innerVal, new_dims))
 	af_print(moddims(result, new_dims))
@@ -54,6 +81,7 @@ int main(int argc, char* argv[])
 		int device = argc > 1 ? atoi(argv[1]) : 0;
 		setDevice(device);
 		info();
+//		array asdf = { 1.0, 0.2, -0.5, -0.2, 0.9 };
 		data.load();
 		//		af_print(data.weight_mtrx);
 		run();
