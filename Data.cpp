@@ -10,7 +10,7 @@ double kronecker_delta(int i, int j)
 	{
 		j = cities.size() - 1;
 	}
-	else if(j>cities.size() - 1)
+	else if (j > cities.size() - 1)
 	{
 		j = 0;
 	}
@@ -52,7 +52,7 @@ array calc_weight_mtrx()
 array calc_biases()
 {
 	int n = cities.size() * cities.size();
-	array tmp = constant(C * 15.0, n, f64);
+	array tmp = constant(C * N, n, f64);
 	return tmp;
 }
 
