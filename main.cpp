@@ -34,13 +34,30 @@ void run()
 	int n = cities.size() * cities.size();
 	array innerVal = NOISE * (randu(n) - constant(0.5, n, f64));
 	array result = activationFunc(innerVal);
+	float progress = 0.0;
+	const double step = 1.0 / (RECALL_TIME - 1.0);
+
 	for (int i = 0; i < RECALL_TIME; ++i)
 	{
 		//update innerVal
 		innerVal += calcDeltaU(result, innerVal);
 		//update state from innerVal
 		result = activationFunc(innerVal);
+		int barWidth = 70;
+		std::cout << "[";
+		int pos = barWidth * progress;
+		for (int i = 0; i < barWidth; ++i)
+		{
+			if (i < pos) std::cout << "=";
+			else if (i == pos) std::cout << ">";
+			else std::cout << " ";
+		}
+		std::cout << "] " << int(progress * 100.0) << " %\r";
+		std::cout.flush();
+		progress += step;
 	}
+	std::cout << std::endl;
+
 	dim4 new_dims(cities.size(), cities.size());
 	af_print(moddims(innerVal, new_dims))
 	af_print(moddims(result, new_dims))
