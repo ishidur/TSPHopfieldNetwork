@@ -29,16 +29,32 @@ array calcDeltaU(const array& state, const array& innerVal)
 	return delta;
 }
 
+//void outState(const array& state)
+//{
+//	int n = cities.size();
+//	for (int s0 = 0; s0 < n; ++s0)
+//	{
+//		for (int s1 = 0; s1 < n; ++s1)
+//		{
+//			int i = s0 * n + s1;
+//			auto s = state.row(i).col(0);
+//			std::cout << s;
+//			std::cout << ",";
+//		}
+//		std::cout << std::endl;
+//	}
+//}
+
 void run()
 {
 	int n = cities.size() * cities.size();
-	setSeed(time(NULL));
+	setSeed(time(nullptr));
 	array innerVal = NOISE * (randu(n, f64) - constant(0.5, n, f64));
 	array result = activationFunc(innerVal);
 	float progress = 0.0;
 	const double step = 1.0 / (RECALL_TIME - 1.0);
 	dim4 new_dims(cities.size(), cities.size());
-	af_print(moddims(result, new_dims))	;
+	af_print(moddims(result, new_dims))
 	for (int i = 0; i < RECALL_TIME; ++i)
 	{
 		//update innerVal
