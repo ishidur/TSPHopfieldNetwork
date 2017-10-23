@@ -13,6 +13,11 @@
 #include "parameters.h"
 #include "Data.h"
 #include <iomanip>
+#include <imagehlp.h>
+#include <ctime>
+#pragma comment(lib, "imagehlp.lib")>
+#include <fstream>
+#include <iostream>
 
 using namespace af;
 Data data;
@@ -29,23 +34,26 @@ array calcDeltaU(const array& state, const array& innerVal)
 	return delta;
 }
 
-//void outState(const array& state)
-//{
-//	int n = cities.size();
-//	for (int s0 = 0; s0 < n; ++s0)
-//	{
-//		for (int s1 = 0; s1 < n; ++s1)
-//		{
-//			int i = s0 * n + s1;
-//			auto s = state.row(i).col(0);
-//			std::cout << s;
-//			std::cout << ",";
-//		}
-//		std::cout << std::endl;
-//	}
-//}
+void outState(const array& state, std::ostream& out = std::cout)
+{
+	int n = cities.size();
+	for (int s0 = 0; s0 < n; ++s0)
+	{
+		for (int s1 = 0; s1 < n; ++s1)
+		{
+			int i = s0 * n + s1;
+			double s = sum<double>(state(i));
+			out << s;
+			if (s1 != n - 1)
+			{
+				out << ",";
+			}
+		}
+		out << std::endl;
+	}
+}
 
-void run()
+void run(std::ostream& ofs = std::cout)
 {
 	int n = cities.size() * cities.size();
 	setSeed(time(nullptr));
@@ -54,7 +62,8 @@ void run()
 	float progress = 0.0;
 	const double step = 1.0 / (RECALL_TIME - 1.0);
 	dim4 new_dims(cities.size(), cities.size());
-	af_print(moddims(result, new_dims))
+	//	af_print(moddims(result, new_dims))
+	//	outState(result);
 	for (int i = 0; i < RECALL_TIME; ++i)
 	{
 		//update innerVal
@@ -75,11 +84,13 @@ void run()
 		progress += step;
 		if (i == RECALL_TIME / 2)
 		{
-			af_print(moddims(result, new_dims))
+			//			af_print(moddims(result, new_dims))
+			//			outState(result, ofs);
 		}
 	}
 	std::cout << std::endl;
-	af_print(moddims(result, new_dims))
+	//	af_print(moddims(result, new_dims))
+	outState(result, ofs);
 }
 
 int main(int argc, char* argv[])
@@ -92,7 +103,14 @@ int main(int argc, char* argv[])
 		info();
 		data.load();
 		//		af_print(data.weight_mtrx);
-		run();
+
+		std::string filename = "result.csv";
+		std::ofstream ofs(filename);
+		for (int i = 0; i < 50; ++i)
+		{
+			run(ofs);
+			ofs << std::endl << std::endl;
+		}
 	}
 	catch (exception& e)
 	{
