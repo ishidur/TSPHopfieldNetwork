@@ -30,7 +30,7 @@ double distance(int x, int y)
 array calc_weight_mtrx()
 {
 	int n = cities.size() * cities.size();
-	array tmp = randu(n, n, f64);
+	array tmp = constant(0.0, n, n, f64);
 	for (int s0 = 0; s0 < n; ++s0)
 	{
 		int x = s0 / cities.size();

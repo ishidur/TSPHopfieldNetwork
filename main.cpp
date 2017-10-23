@@ -44,21 +44,35 @@ array calcDeltaU(const array& state)
 	return delta;
 }
 
+double updateState(int index, const array& state)
+{
+	double delta = sum<double>(matmul(data.weight_mtrx.row(index), state) + data.biases.row(index));
+	if (delta > 0.0)
+	{
+		return 1.0;
+	}
+	return 0.0;
+}
+
 void run()
 {
 	int n = cities.size() * cities.size();
+	setSeed(time(nullptr));
 	array innerVal = NOISE * (randu(n, f64) - constant(0.5, n, f64));
-	array result = activationFunc(innerVal);
+	array result = constant(0.0, n, f64);
+	result(result > 0.0) = 1.0;
 	float progress = 0.0;
 	const double step = 1.0 / (RECALL_TIME - 1.0);
 	for (int i = 0; i < RECALL_TIME; ++i)
 	{
 		//update innerVal
-		innerVal += calcDeltaU(result);
+		//		innerVal += calcDeltaU(result);
 		//update state from innerVal
-		result = activationFunc(innerVal);
-		int barWidth = 70;
+		//		result = reluFunc1(innerVal);
+		int a = rand() % n;
 
+		result(a) = updateState(a, result);
+		int barWidth = 70;
 		std::cout << "[";
 		int pos = barWidth * progress;
 		for (int i = 0; i < barWidth; ++i)
@@ -69,15 +83,14 @@ void run()
 		}
 		std::cout << "] " << int(progress * 100.0) << " %\r";
 		std::cout.flush();
-
 		progress += step;
 	}
 	std::cout << std::endl;
 
 	dim4 new_dims(cities.size(), cities.size());
-	af_print(moddims(result, new_dims));
-//	array sdf = range(cities.size() * cities.size());
-//	af_print(moddims(sdf, new_dims));
+	af_print(moddims(result, new_dims))
+	//	array sdf = range(cities.size() * cities.size());
+	//	af_print(moddims(sdf, new_dims));
 }
 
 int main(int argc, char* argv[])
