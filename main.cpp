@@ -104,9 +104,14 @@ int main(int argc, char* argv[])
 		data.load();
 		//		af_print(data.weight_mtrx);
 
-		std::string filename = "result.csv";
+		std::string filename = "result";
+
+		time_t epoch_time;
+		epoch_time = time(nullptr);
+		filename += "-" + std::to_string(epoch_time);
+		filename += ".csv";
 		std::ofstream ofs(filename);
-		for (int i = 0; i < 50; ++i)
+		for (int i = 0; i < TRIAL; ++i)
 		{
 			run(ofs);
 			ofs << std::endl << std::endl;

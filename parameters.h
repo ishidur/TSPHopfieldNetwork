@@ -3,10 +3,11 @@
 #define DELTA_T 0.01
 #define	NOISE 0.001
 #define U0 0.02
-#define A 500.0
-#define B 500.0
-#define C 1000.0
-#define D 500.0
+#define A 1.0
+#define B 1.0
+#define C 2.0
+#define D 1.0
+#define TRIAL 50
 #define N 10.0
 
 #include <vector>
