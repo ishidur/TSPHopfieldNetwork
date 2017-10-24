@@ -114,7 +114,8 @@ double calcRouteLength(std::vector<int> const& path)
 
 void print(const std::vector<int>& v)
 {
-	std::for_each(v.begin(), v.end(), [](int x) {
+	std::for_each(v.begin(), v.end(), [](int x)
+	{
 		std::cout << x << " ";
 	});
 	std::cout << std::endl;
@@ -140,28 +141,28 @@ int main(int argc, char* argv[])
 		int device = argc > 1 ? atoi(argv[1]) : 0;
 		setDevice(device);
 		info();
-		std::string filename = "path";
-		time_t epoch_time;
-		epoch_time = time(nullptr);
-		filename += "-" + std::to_string(epoch_time);
-		filename += ".csv";
-		std::ofstream ofs(filename);
-		allPath(ofs);
-		//		data.load();
-		//		//		af_print(data.weight_mtrx);
-		//
-		//		std::string filename = "result";
-		//
+		//		std::string filename = "path";
 		//		time_t epoch_time;
 		//		epoch_time = time(nullptr);
 		//		filename += "-" + std::to_string(epoch_time);
 		//		filename += ".csv";
 		//		std::ofstream ofs(filename);
-		//		for (int i = 0; i < TRIAL; ++i)
-		//		{
-		//			run(ofs);
-		//			ofs << std::endl << std::endl;
-		//		}
+		//		allPath(ofs);
+		data.load();
+		//		af_print(data.weight_mtrx);
+
+		std::string filename = "result";
+
+		time_t epoch_time;
+		epoch_time = time(nullptr);
+		filename += "-" + std::to_string(epoch_time);
+		filename += ".csv";
+		std::ofstream ofs(filename);
+		for (int i = 0; i < TRIAL; ++i)
+		{
+			run(ofs);
+			ofs << std::endl << std::endl;
+		}
 	}
 	catch (exception& e)
 	{
