@@ -24,6 +24,8 @@ bld/
 
 # user difined
 result-*.csv
+result.csv
+path-*.csv
 
 # Visual Studio 2015 cache/options directory
 .vs/

@@ -93,6 +93,45 @@ void run(std::ostream& ofs = std::cout)
 	outState(result, ofs);
 }
 
+#include  <algorithm>
+
+double city_dist(int x, int y)
+{
+	return sqrt(
+		(cities[x][0] - cities[y][0]) * (cities[x][0] - cities[y][0]) + (cities[x][1] - cities[y][1]) * (cities[x][1] - cities
+			[y][1]));
+}
+
+double calcRouteLength(std::vector<int> const& path)
+{
+	double result = city_dist(path[0], path[path.size() - 1]);
+	for (int i = 1; i < path.size(); ++i)
+	{
+		result += city_dist(path[i], path[i - 1]);
+	}
+	return result;
+}
+
+void print(const std::vector<int>& v)
+{
+	std::for_each(v.begin(), v.end(), [](int x) {
+		std::cout << x << " ";
+	});
+	std::cout << std::endl;
+}
+
+void allPath(std::ostream& ofs = std::cout)
+{
+	std::vector<int> x = {0,1,2,3,4,5,6,7,8,9};
+	int nx = x.size();
+	do
+	{
+		ofs << calcRouteLength(x) << ",";
+	}
+	while (next_permutation(x.begin(), x.end()));
+}
+
+
 int main(int argc, char* argv[])
 {
 	try
@@ -101,21 +140,28 @@ int main(int argc, char* argv[])
 		int device = argc > 1 ? atoi(argv[1]) : 0;
 		setDevice(device);
 		info();
-		data.load();
-		//		af_print(data.weight_mtrx);
-
-		std::string filename = "result";
-
+		std::string filename = "path";
 		time_t epoch_time;
 		epoch_time = time(nullptr);
 		filename += "-" + std::to_string(epoch_time);
 		filename += ".csv";
 		std::ofstream ofs(filename);
-		for (int i = 0; i < TRIAL; ++i)
-		{
-			run(ofs);
-			ofs << std::endl << std::endl;
-		}
+		allPath(ofs);
+		//		data.load();
+		//		//		af_print(data.weight_mtrx);
+		//
+		//		std::string filename = "result";
+		//
+		//		time_t epoch_time;
+		//		epoch_time = time(nullptr);
+		//		filename += "-" + std::to_string(epoch_time);
+		//		filename += ".csv";
+		//		std::ofstream ofs(filename);
+		//		for (int i = 0; i < TRIAL; ++i)
+		//		{
+		//			run(ofs);
+		//			ofs << std::endl << std::endl;
+		//		}
 	}
 	catch (exception& e)
 	{
