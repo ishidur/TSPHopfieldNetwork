@@ -49,9 +49,14 @@ void print(const std::vector<int>& v)
 	std::cout << std::endl;
 }
 
+int current = -1;
+int UniqueNumber() { return ++current; }
+
 void allPath(std::ostream& ofs = std::cout)
 {
-	std::vector<int> x = {0,1,2,3,4,5,6,7,8,9};
+	std::vector<int> x(cities.size());
+	generate(x.begin(), x.end(), UniqueNumber);
+
 	int nx = x.size();
 	do
 	{
@@ -174,24 +179,23 @@ int main(int argc, char* argv[])
 		int device = argc > 1 ? atoi(argv[1]) : 0;
 		setDevice(device);
 		info();
-		//		std::string filename = "path";
-		//		time_t epoch_time;
-		//		epoch_time = time(nullptr);
-		//		filename += "-" + std::to_string(epoch_time);
-		//		filename += ".csv";
-		//		std::ofstream ofs(filename);
-		//		allPath(ofs);
-		data.load();
-		//		af_print(data.weight_mtrx);
-		std::string filename = "result";
+		std::string filename = "path";
 		time_t epoch_time;
 		epoch_time = time(nullptr);
 		filename += "-" + std::to_string(epoch_time);
 		filename += ".csv";
 		std::ofstream ofs(filename);
+		allPath(ofs);
+		data.load();
+		std::string filename1 = "result";
+		//		time_t epoch_time;
+		//		epoch_time = time(nullptr);
+		filename1 += "-" + std::to_string(epoch_time);
+		filename1 += ".csv";
+		std::ofstream ofs1(filename1);
 		for (int i = 0; i < TRIAL; ++i)
 		{
-			run(ofs);
+			run(ofs1);
 			ofs << std::endl;
 		}
 	}
