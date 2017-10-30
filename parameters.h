@@ -8,7 +8,7 @@
 #define C 2.0
 #define D 1.0
 #define TRIAL 10
-#define N 15.0
+#define N 10
 
 #include <vector>
 const std::vector<std::vector<double>> cities = {
@@ -21,10 +21,5 @@ const std::vector<std::vector<double>> cities = {
 	{ 0.65, 0.3 },
 	{ 0.9, 0.35 },
 	{ 0.7, 0.5 },
-	{ 0.9, 0.7 },
-	{ 0.5, 0.9 },
-	{ 0.4, 0.7 },
-	{ 0.5, 0.2 },
-	{ 0.2, 0.5 },
-	{ 0.8, 0.8 }
+	{ 0.9, 0.7 }
 };

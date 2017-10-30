@@ -18,9 +18,47 @@
 #pragma comment(lib, "imagehlp.lib")>
 #include <fstream>
 #include <iostream>
+#include  <algorithm>
 
 using namespace af;
 Data data;
+
+double city_dist(int x, int y)
+{
+	return sqrt(
+		(cities[x][0] - cities[y][0]) * (cities[x][0] - cities[y][0]) + (cities[x][1] - cities[y][1]) * (cities[x][1] - cities
+			[y][1]));
+}
+
+double calcRouteLength(std::vector<int> const& path)
+{
+	double result = city_dist(path[0], path[path.size() - 1]);
+	for (int i = 1; i < path.size(); ++i)
+	{
+		result += city_dist(path[i], path[i - 1]);
+	}
+	return result;
+}
+
+void print(const std::vector<int>& v)
+{
+	std::for_each(v.begin(), v.end(), [](int x)
+	{
+		std::cout << x << " ";
+	});
+	std::cout << std::endl;
+}
+
+void allPath(std::ostream& ofs = std::cout)
+{
+	std::vector<int> x = {0,1,2,3,4,5,6,7,8,9};
+	int nx = x.size();
+	do
+	{
+		ofs << calcRouteLength(x) << ",";
+	}
+	while (next_permutation(x.begin(), x.end()));
+}
 
 array activationFunc(const array& inputs)
 {
@@ -63,7 +101,6 @@ void run(std::ostream& ofs = std::cout)
 	const double step = 1.0 / (RECALL_TIME - 1.0);
 	dim4 new_dims(cities.size(), cities.size());
 	//	af_print(moddims(result, new_dims))
-	//	outState(result);
 	for (int i = 0; i < RECALL_TIME; ++i)
 	{
 		//update innerVal
@@ -82,54 +119,50 @@ void run(std::ostream& ofs = std::cout)
 		std::cout << "] " << int(progress * 100.0) << " %\r";
 		std::cout.flush();
 		progress += step;
-		if (i == RECALL_TIME / 2)
+		//		if (i == RECALL_TIME / 2)
+		//		{
+		//			af_print(moddims(result, new_dims))
+		//			outState(result, ofs);
+		//		}
+	}
+	std::cout << std::endl;
+	std::vector<int> route;
+	for (int i = 0; i < cities.size(); ++i)
+	{
+		int pos = -1;
+		double maxval = 0.0;
+		for (int x = 0; x < cities.size(); ++x)
 		{
-			//			af_print(moddims(result, new_dims))
-			//			outState(result, ofs);
+			int index = x * cities.size() + i;
+			double val = sum<double>(result(index));
+			if (val > maxval)
+			{
+				maxval = val;
+				pos = x;
+			}
 		}
+		if (pos == -1)
+		{
+			break;
+		}
+		route.push_back(pos);
 	}
-	std::cout << std::endl;
-	//	af_print(moddims(result, new_dims))
 	outState(result, ofs);
-}
-
-#include  <algorithm>
-
-double city_dist(int x, int y)
-{
-	return sqrt(
-		(cities[x][0] - cities[y][0]) * (cities[x][0] - cities[y][0]) + (cities[x][1] - cities[y][1]) * (cities[x][1] - cities
-			[y][1]));
-}
-
-double calcRouteLength(std::vector<int> const& path)
-{
-	double result = city_dist(path[0], path[path.size() - 1]);
-	for (int i = 1; i < path.size(); ++i)
+	for (int i = 0; i < cities.size(); ++i)
 	{
-		result += city_dist(path[i], path[i - 1]);
+		ofs << ",";
 	}
-	return result;
-}
-
-void print(const std::vector<int>& v)
-{
-	std::for_each(v.begin(), v.end(), [](int x)
+	if (route.size() == cities.size())
 	{
-		std::cout << x << " ";
-	});
-	std::cout << std::endl;
-}
-
-void allPath(std::ostream& ofs = std::cout)
-{
-	std::vector<int> x = {0,1,2,3,4,5,6,7,8,9};
-	int nx = x.size();
-	do
-	{
-		ofs << calcRouteLength(x) << ",";
+		double length = calcRouteLength(route);
+		print(route);
+		std::cout << std::endl;
+		ofs << length << std::endl;
 	}
-	while (next_permutation(x.begin(), x.end()));
+	else
+	{
+		ofs << "invailed" << std::endl;
+	}
 }
 
 
@@ -150,9 +183,7 @@ int main(int argc, char* argv[])
 		//		allPath(ofs);
 		data.load();
 		//		af_print(data.weight_mtrx);
-
 		std::string filename = "result";
-
 		time_t epoch_time;
 		epoch_time = time(nullptr);
 		filename += "-" + std::to_string(epoch_time);
@@ -161,7 +192,7 @@ int main(int argc, char* argv[])
 		for (int i = 0; i < TRIAL; ++i)
 		{
 			run(ofs);
-			ofs << std::endl << std::endl;
+			ofs << std::endl;
 		}
 	}
 	catch (exception& e)

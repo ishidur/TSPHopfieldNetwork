@@ -22,7 +22,11 @@ bld/
 [Bb]in/
 [Oo]bj/
 
-# user difined
+# user defined
+Unified/
+OpenCL/
+CPU/
+CUDA/
 result-*.csv
 result.csv
 path-*.csv
