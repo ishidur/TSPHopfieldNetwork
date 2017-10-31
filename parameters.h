@@ -27,4 +27,5 @@ const std::vector<std::vector<double>> cities = {
 	{0.2, 0.5},
 	{0.8, 0.8}
 };
+
 #define N cities.size()

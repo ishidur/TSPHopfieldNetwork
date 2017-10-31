@@ -56,7 +56,6 @@ void allPath(std::ostream& ofs = std::cout)
 {
 	std::vector<int> x(cities.size());
 	generate(x.begin(), x.end(), UniqueNumber);
-
 	int nx = x.size();
 	do
 	{
@@ -96,6 +95,23 @@ void outState(const array& state, std::ostream& out = std::cout)
 	}
 }
 
+bool validateRoute(std::vector<int> const& route)
+{
+	if (route.size() != cities.size())
+	{
+		return false;
+	}
+	for (int i = 0; i < cities.size(); ++i)
+	{
+		int n = std::count(route.begin(), route.end(), i);
+		if (n != 1)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 void run(std::ostream& ofs = std::cout)
 {
 	int n = cities.size() * cities.size();
@@ -112,7 +128,7 @@ void run(std::ostream& ofs = std::cout)
 		innerVal += calcDeltaU(result, innerVal);
 		//update state from innerVal
 		result = activationFunc(innerVal);
-		int barWidth = 70;
+		const int barWidth = 70;
 		std::cout << "[";
 		int pos = barWidth * progress;
 		for (int i = 0; i < barWidth; ++i)
@@ -121,9 +137,9 @@ void run(std::ostream& ofs = std::cout)
 			else if (i == pos) std::cout << ">";
 			else std::cout << " ";
 		}
+		progress += step;
 		std::cout << "] " << int(progress * 100.0) << " %\r";
 		std::cout.flush();
-		progress += step;
 		//		if (i == RECALL_TIME / 2)
 		//		{
 		//			af_print(moddims(result, new_dims))
@@ -153,19 +169,21 @@ void run(std::ostream& ofs = std::cout)
 		route.push_back(pos);
 	}
 	outState(result, ofs);
+
 	for (int i = 0; i < cities.size(); ++i)
 	{
 		ofs << ",";
 	}
-	if (route.size() == cities.size())
+	print(route);
+	std::cout << std::endl;
+	if (validateRoute(route))
 	{
 		double length = calcRouteLength(route);
-		print(route);
-		std::cout << std::endl;
 		ofs << length << std::endl;
 	}
 	else
 	{
+		std::cout << "invailed" << std::endl;
 		ofs << "invailed" << std::endl;
 	}
 }
@@ -179,13 +197,13 @@ int main(int argc, char* argv[])
 		int device = argc > 1 ? atoi(argv[1]) : 0;
 		setDevice(device);
 		info();
-		std::string filename = "path";
+		//		std::string filename = "path";
 		time_t epoch_time;
 		epoch_time = time(nullptr);
-		filename += "-" + std::to_string(epoch_time);
-		filename += ".csv";
-		std::ofstream ofs(filename);
-		allPath(ofs);
+		//		filename += "-" + std::to_string(epoch_time);
+		//		filename += ".csv";
+		//		std::ofstream ofs(filename);
+		//		allPath(ofs);
 		data.load();
 		std::string filename1 = "result";
 		//		time_t epoch_time;
@@ -196,7 +214,7 @@ int main(int argc, char* argv[])
 		for (int i = 0; i < TRIAL; ++i)
 		{
 			run(ofs1);
-			ofs << std::endl;
+			ofs1 << std::endl;
 		}
 	}
 	catch (exception& e)
