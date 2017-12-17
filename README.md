@@ -1,4 +1,4 @@
-# Traveling Salesman Problem Hopfield Network Project
+# Hopfield Network with Traveling Salesman Problem Project
 ## Enviroment  
 |package|version|
 |:--|:--:|
