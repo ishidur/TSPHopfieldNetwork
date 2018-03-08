@@ -30,53 +30,41 @@ double city_dist(int x, int y)
 			[y][1]));
 }
 
-double calcRouteLength(std::vector<int> const& path)
+double calc_route_length(std::vector<int> const& path)
 {
 	double result = city_dist(path[0], path[path.size() - 1]);
-	for (int i = 1; i < path.size(); ++i)
-	{
-		result += city_dist(path[i], path[i - 1]);
-	}
+	for (int i = 1; i < path.size(); ++i) { result += city_dist(path[i], path[i - 1]); }
 	return result;
 }
 
 void print(const std::vector<int>& v)
 {
-	std::for_each(v.begin(), v.end(), [](int x)
-	{
-		std::cout << x << " ";
-	});
+	std::for_each(v.begin(), v.end(), [](int x) { std::cout << x << " "; });
 	std::cout << std::endl;
 }
 
 int current = -1;
-int UniqueNumber() { return ++current; }
+int unique_number() { return ++current; }
 
-void allPath(std::ostream& ofs = std::cout)
+void all_path(std::ostream& ofs = std::cout)
 {
 	std::vector<int> x(cities.size());
-	generate(x.begin(), x.end(), UniqueNumber);
+	generate(x.begin(), x.end(), unique_number);
 	int nx = x.size();
-	do
-	{
-		ofs << calcRouteLength(x) << ",";
-	}
+	do { ofs << calc_route_length(x) << ","; }
 	while (next_permutation(x.begin(), x.end()));
 }
 
-array activationFunc(const array& inputs)
-{
-	return sigmoid(inputs / U0);
-}
+array activation_func(const array& inputs) { return sigmoid(inputs / U0); }
 
-array calcDeltaU(const array& state, const array& innerVal)
+array calc_delta_u(const array& state, const array& innerVal)
 {
 	const double tau = 1.0;
 	array delta = (-innerVal / tau + matmul(data.weight_mtrx, state) + data.biases) * DELTA_T;
 	return delta;
 }
 
-void outState(const array& state, std::ostream& out = std::cout)
+void out_state(const array& state, std::ostream& out = std::cout)
 {
 	int n = cities.size();
 	for (int s0 = 0; s0 < n; ++s0)
@@ -86,28 +74,19 @@ void outState(const array& state, std::ostream& out = std::cout)
 			int i = s0 * n + s1;
 			double s = sum<double>(state(i));
 			out << s;
-			if (s1 != n - 1)
-			{
-				out << ",";
-			}
+			if (s1 != n - 1) { out << ","; }
 		}
 		out << std::endl;
 	}
 }
 
-bool validateRoute(std::vector<int> const& route)
+bool validate_route(std::vector<int> const& route)
 {
-	if (route.size() != cities.size())
-	{
-		return false;
-	}
+	if (route.size() != cities.size()) { return false; }
 	for (int i = 0; i < cities.size(); ++i)
 	{
 		int n = std::count(route.begin(), route.end(), i);
-		if (n != 1)
-		{
-			return false;
-		}
+		if (n != 1) { return false; }
 	}
 	return true;
 }
@@ -116,8 +95,8 @@ void run(std::ostream& ofs = std::cout)
 {
 	int n = cities.size() * cities.size();
 	setSeed(time(nullptr));
-	array innerVal = NOISE * (randu(n, f64) - constant(0.5, n, f64));
-	array result = activationFunc(innerVal);
+	array inner_val = NOISE * (randu(n, f64) - constant(0.5, n, f64));
+	array result = activation_func(inner_val);
 	float progress = 0.0;
 	const double step = 1.0 / (RECALL_TIME - 1.0);
 	dim4 new_dims(cities.size(), cities.size());
@@ -125,9 +104,9 @@ void run(std::ostream& ofs = std::cout)
 	for (int i = 0; i < RECALL_TIME; ++i)
 	{
 		//update innerVal
-		innerVal += calcDeltaU(result, innerVal);
+		inner_val += calc_delta_u(result, inner_val);
 		//update state from innerVal
-		result = activationFunc(innerVal);
+		result = activation_func(inner_val);
 		const int barWidth = 70;
 		std::cout << "[";
 		int pos = barWidth * progress;
@@ -162,23 +141,17 @@ void run(std::ostream& ofs = std::cout)
 				pos = x;
 			}
 		}
-		if (pos == -1)
-		{
-			break;
-		}
+		if (pos == -1) { break; }
 		route.push_back(pos);
 	}
-	outState(result, ofs);
+	out_state(result, ofs);
 
-	for (int i = 0; i < cities.size(); ++i)
-	{
-		ofs << ",";
-	}
+	for (int i = 0; i < cities.size(); ++i) { ofs << ","; }
 	print(route);
 	std::cout << std::endl;
-	if (validateRoute(route))
+	if (validate_route(route))
 	{
-		double length = calcRouteLength(route);
+		double length = calc_route_length(route);
 		ofs << length << std::endl;
 	}
 	else
@@ -211,11 +184,12 @@ int main(int argc, char* argv[])
 		filename1 += "-" + std::to_string(epoch_time);
 		filename1 += ".csv";
 		std::ofstream ofs1(filename1);
-		for (int i = 0; i < TRIAL; ++i)
-		{
-			run(ofs1);
-			ofs1 << std::endl;
-		}
+		af_print(data.weight_mtrx)		;
+		//		for (int i = 0; i < TRIAL; ++i)
+		//		{
+		//			run(ofs1);
+		//			ofs1 << std::endl;
+		//		}
 	}
 	catch (exception& e)
 	{

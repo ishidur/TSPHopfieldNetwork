@@ -6,18 +6,9 @@
 
 double kronecker_delta(int i, int j)
 {
-	if (j < 0)
-	{
-		j = cities.size() - 1;
-	}
-	else if (j > cities.size() - 1)
-	{
-		j = 0;
-	}
-	if (i == j)
-	{
-		return 1.0;
-	}
+	if (j < 0) { j = cities.size() - 1; }
+	else if (j > cities.size() - 1) { j = 0; }
+	if (i == j) { return 1.0; }
 	return 0.0;
 }
 
